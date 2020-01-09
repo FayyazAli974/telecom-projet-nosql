@@ -1,0 +1,41 @@
+Ce qui est long c'est le temps d'exécution. 
+Tester en local sur une partie des données, puis le lancer ensuite sur toutes les données.
+
+Neo4j: Si on utilise cette techno, mettre des index
+
+
+But: proposer un système de stockage distribué, résilient et performant sur AWS
+2 types de fichiers : événements et graphes des relations
+Pas utile d'utiliser la table mention. On peut faire le comptage des mentions dans les tables d'événements.
+http://data.gdeltproject.org/gdeltv2
+
+Planning:
+- 2 semaines pour faire le projet
+- faire la gestion de données en une semaine, puis le stockage et résilience la deuxième
+
+Note :
+5 présentation
+5 infrastructure, performances
+10 implémentation des fonctionnalités, modélisation
+
+
+Démonter la résilience du système (chaos monkey - éteindre tel noeud pendant la présentation)
+Sur Spark, mettre en cache les données assez tôt
+
+
+
+
+Requête A: afficher le nombre d’articles/évènements qu’il y a eu pour chaque triplet (jour, pays de l’évènement, langue de l’article).
+Global event id
+NumArticles
+Actor1CountryCode
+
+Requête C: Utiliser juste la table GKG. Ca ne sert à rien de faire des jointures
+
+
+AWS
+Config qui fonctionne: M4 large Virginia
+Cliquer sur security group, choisir le premier, cliquer sur Entrant, Modifier, puis ajouter une règle (tout le trafic, de partout)
+Ouvrir Zeppelin
+
+Utiliser Instance Spot pour économiser sur le coût du calcul ?
