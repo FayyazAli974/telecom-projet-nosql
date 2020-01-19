@@ -1,7 +1,7 @@
 # Configuration EMR
 
 **Pré-requis**
-* Avoir créé au préalable un bucket EC2 nommé "inf728-projet", et dans ce bucket un dossier "data" ;
+* Avoir créé au préalable un bucket S3 nommé "inf728-projet", et dans ce bucket un dossier "data" ;
 * Avoir créé au préalable une paire de clés EC2.
 
 **Créer un EMR avec cette configuration:**
