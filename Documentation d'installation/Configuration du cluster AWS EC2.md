@@ -170,7 +170,7 @@ Nous pouvons maintenant passer à l'installation et la configuration de Zookeepe
 
 Zookeeper (ZK) peut être installé indépendamment sur un nœud ou directement avec Spark / Cassandra sur des Workers. Chaque nœud ZK doit communiquer avec les autres instances ZK pour former un quorum de 3. Nous avons choisi d'installer Zookeeper avant Spark car la configuration est plus simple ainsi.
 
-### 3.1 Connexion SSH sur tous les nœuds
+### 4.1 Connexion SSH sur tous les nœuds
 
 La console AWS EC2 fournit directement pour chaque serveur un lien permettant de se connecter en SSH. Pour cela, il faut commencer par se placer dans le répertoire où se trouve notre clé ***"gdeltKeyPair.pem"*** puis lancer la commande indiquée. Cela donne donc :
 
@@ -181,7 +181,7 @@ ssh -i "gdeltKeyPair.pem" ubuntu@<copy the public DNS>
 Cette action est donc à faire pour chaque serveurs.
 
 
-### 3.2 Installer Apache-Zookeeper sur nos instances
+### 4.2 Installer Apache-Zookeeper sur nos instances
 
 * On commence par se placer dans le répertoire `home` :
 ```bash
@@ -191,11 +191,7 @@ cd /home/ubuntu/
 
 * On télécharge le .tar.gz, on l'extrait et on le supprime :
 ```bash
-wget https://www-eu.apache.org/dist/zookeeper/zookeeper-3.5.6/apache-zookeeper-3.5.6-bin.tar.gz
-
-tar -xzvf apache-zookeeper-3.5.6-bin.tar.gz
-
-rm apache-zookeeper-3.5.6-bin.tar.gz
+wget https://www-eu.apache.org/dist/zookeeper/zookeeper-3.5.6/apache-zookeeper-3.5.6-bin.tar.gz && tar -xzvf apache-zookeeper-3.5.6-bin.tar.gz && rm apache-zookeeper-3.5.6-bin.tar.gz
 ```
 
 * On renomme le fichier décompressé avec une indentation *X* différente pour chaque nœud (1 pour Worker1, 2 pour Worker2 et 3 pour le serveur ZK dédié) : 
@@ -206,7 +202,7 @@ mv apache-zookeeper-3.5.6-bin/ zookeeper_X
 On peut alors passer à la configuration des nœuds.
 
 
-### 3.3 Configurer les nœuds
+### 4.3 Configurer les nœuds
 
 * On créé les dossiers `data` et `logs` :
 ```bash
@@ -252,7 +248,7 @@ Et également :
 java -cp lib/zookeeper-3.5.6.jar:lib/log4j-1.2.17.jar:lib/slf4j-log4j12-1.7.25.jar:lib/slf4j-api-1.7.25.jar:conf org.apache.zookeeper.server.quorum.QuorumPeerMain ./conf/zoo.cfg >> logs/zookeeper.log &
 ```
 
-### 3.4 Lancer le service sur chaque nœuds
+### 4.4 Lancer le service sur chaque nœuds
 
 On peut alors lancer le service sur chaque nœud avec :
 ```bash
