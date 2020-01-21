@@ -20,3 +20,9 @@
 
 Zeppelin peut alors être lancé et le notebook chargé.
 Ne pas oublier d'exporter le notebook Zeppelin à la fin, pour conserver ses modifications.
+
+
+
+**Cassandra**
+sudo chown -R zeppelin:zeppelin /usr/lib/zeppelin/local-repo/
+sudo /usr/lib/zeppelin/bin/install-interpreter.sh --name cassandra  #org.apache.zeppelin:zeppelin-cassandra_2.10:0.6.2
