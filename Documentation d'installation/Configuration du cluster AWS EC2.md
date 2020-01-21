@@ -217,7 +217,7 @@ mkdir logs
 cd data > myid.txt
 vi myid.txt
 ```
-> En fonction du nœud sur lequel on se trouve, ajouter le digit dans le fichier .txt : 
+En fonction du nœud sur lequel on se trouve, ajouter le digit dans le fichier .txt : 
 * 1: si vous travaillez sur le Worker 1
 * 2: si vous travaillez sur le Worker 2
 * 3: si vous travaillez sur le nœud "Zookeeper"
