@@ -214,18 +214,14 @@ mkdir logs
 
 * On créé un nouveau fichier `myid` qui contiendra uniquement un digit entre 1 et 3 :
 ```bash
-cd data > myid.txt
-vi myid.txt
+cd data && touch myid
+vi myid
 ```
 En fonction du nœud sur lequel on se trouve, ajouter le digit dans le fichier .txt : 
 * 1: si vous travaillez sur le Worker 1
 * 2: si vous travaillez sur le Worker 2
 * 3: si vous travaillez sur le nœud "Zookeeper"
 
-**Remarque :** si au lancement des services un message d'erreur apparaît au sujet du fichier `myid`, recréer les fichiers dans les mêmes dossiers avec :
-```bash
-touch myid
-```
 
 * On créé et modifie le fichier `zoo.cfg` à l'aide du fichier `zoo_sample.cfg` :
 ```bash
