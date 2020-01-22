@@ -418,7 +418,7 @@ Pour accéder à zeppelin depuis sa machine locale, il faut commencer par copier
 scp -i gdeltKeyPair.pem gdeltKeyPair.pem ubuntu@ec2-xx-xxx-xxx-xxx.compute-1.amazonaws.com:
 ssh -L 8090:127.0.0.1:8090 -i gdeltKeyPair.pem ubuntu@ec2-xx-xxx-xxx-xxx.compute-1.amazonaws.com
 ```
-On utilise donc le DNS public IPv4 du serveur.
+La commande `-L` redirige le port `127.0.0.1:8890` de l'instance Zeppelin de l'EC2 sur notre port local `8090` (port qui est spécifié en premier). On utilise de plus le DNS public du serveur pour s'y connecter en ssh.
 Il suffit alors d'ouvrir un navigateur et de se connecter à [http://localhost:8090/#/](http://localhost:8090/#/). 
 
 ## Annexes
