@@ -302,54 +302,71 @@ On peut vérifier la bonne prise en compte des modifications avec par exemple :
 ```bash
 echo $SPARK_HOME
 ```
+Et on peut passer à la partie configuration des fichiers de configuration des nœuds.
 
 ### 5.2 Configurer le fichier spark-env.sh
 
-#### Sur les Masters
-
-On commence par se rendre dans le dossier `conf` de spark et par copier les fichiers `spark-env.sh.template` et `spark-defaults.conf.template` (en prévision de l'étape suivante) dans de nouveaux fichiers :
+Sur tous les nœuds on commence par se rendre dans le dossier `conf` de spark et par copier les fichiers `spark-env.sh.template` et `spark-defaults.conf.template` (en prévision de l'étape suivante) dans de nouveaux fichiers :
 ```bash
 cd /home/ubunut/spark-2.3.2-bin-hadoop2.7/conf && cp spark-env.sh.template spark-env.sh && cp spark-defaults.conf.template spark-defaults.conf
 ```
-On ouvre ensuite le fichier `spark-env.sh` que l'on vient de créer pour y renseigner les informations suivantes :
+
+#### Sur les Masters
+
+On ouvre ensuite le fichier `vi spark-env.sh` que l'on vient de créer pour y renseigner les informations suivantes :
 
 ```bash
 export SPARK_LOCAL_IP=ip-xxx-xx-xx-xxx.ec2.internal
 export SPARK_MASTER_HOST=ip-xxx-xx-xx-xxx.ec2.internal
 export SPARK_MASTER_OPTS="-Dspark.deploy.recoveryMode=ZOOKEEPER -Dspark.deploy.zookeeper.url=ip-xxx-xx-xx-xx.ec2.internal:2181,ip-xxx-xx-xx-xxx.ec2.internal:2182,ip-xxx-xx-xx-xxx.ec2.internal:2183"
 ```
-En résumé, il faut renseigner ainsi les champs suivants :
-* `SPARK_LOCAL_IP=` DNS privé du Master sur lequel on est ;
-* `SPARK_MASTER_HOST=` DNS privé du Master sur lequel on est ;
-* `SPARK_MASTER_OPTS=` DNS privé des nœuds Zookeeper avec à chaque fois les numéros de ports clients correspondants ;
+En résumé, il faut renseigner ainsi les champs :
+* `SPARK_LOCAL_IP=`<PRIVATE_DNS_this_NODE>
+* `SPARK_MASTER_HOST=` <PRIVATE_DNS_this_NODE>
+* `SPARK_MASTER_OPTS=` <PRIVATE_DNS_Node_Zk1>:2181,<PRIVATE_DNS_Node_Zk2>:2182,<PRIVATE_DNS_Node_Zk3>:2183"
 
+Et on peut alors passer aux Workers.
 
 #### Sur les Workers
 
-``` bash
+Comme pour les Masters on commence par ouvrir le fichier `vi spark-env.sh` que l'on vient de créer pour y renseigner les informations suivantes :
 
-
-
-vi spark-defaults.conf (voir fichier pour modifs)
-vi spark-env.sh (voir fichier pour modifs)
-
-cd spark-2.3.2-bin-hadoop2.7/jars
-wget https://repo1.maven.org/maven2/com/twitter/jsr166e/1.1.0/jsr166e-1.1.0.jar
-wget https://repo1.maven.org/maven2/com/datastax/spark/spark-cassandra-connector_2.11/2.4.0/spark-cassandra-connector_2.11-2.4.0.jar
+```bash
+export SPARK_LOCAL_IP=ip-xxx-xx-xx-xxx.ec2.internal
+export SPARK_MASTER_HOST=ip-xxx-xx-xx-xxx.ec2.internal,ip-xxx-xx-xx-xxx.ec2.internal
 ```
+En résumé, il faut renseigner ainsi les champs :
+* `SPARK_LOCAL_IP=`<PRIVATE_DNS_this_NODE>
+* `SPARK_MASTER_HOST=` <PRIVATE_DNS_MASTER1,PRIVATE_DNS_MASTER1>
 
-Pour vérifier : IPpublic:8080 (ex : http://3.93.186.250:8080/)
+Nous pouvons alors passer au fichier `spark-defaults.conf`.
 
-
-
-### 5.3 Configurer le fichier spark-default.conf
+### 5.3 Configurer le fichier `spark-defaults.conf`
 
 Le fichier est cette fois quasiment identique pour les Masters et les Workers.
 
+On commence par ouvrir le fichier avec `vi spark-defaults.conf`, puis on ajoute en fin de fichier :
+```bash
+spark.master                        spark://ip-xxx-xx-xx-xxx.ec2.internal:7077,ip-xxx-xx-xx-xxx.ec2.internal:7077
+spark.jars.packages                 datastax:spark-cassandra-connector:2.0.0-s_2.11
+spark.cassandra.connection.host     ip-xxx-xx-xx-xxx.ec2.internal,ip-xxx-xx-xx-xxx.ec2.internal,ip-xxx-xx-xx-xxx.ec2.internal,ip-xxx-xx-xx-xxx.ec2.internal,ip-xxx-xx-xx-xxx.ec2.internal
+```
+Ce qui donne en résumé :
+* **spark.master**                        spark://PRIVATE_DNS_MASTER1:7077,PRIVATE_DNS_MASTER2:7077
+* **spark.jars.packages**                 datastax:spark-cassandra-connector:2.0.0-s_2.11
+* **spark.cassandra.connection.host**     <PRIVATE_DNS_Slaves> (separated by ',')
+
+La partie configuration des fichiers est ainsi terminée.
 
 ### 5.4 Ajouter les dépendances pour connecter Spark et Cassandra
 
-### 5.5 Lancer les Masters et les Workers
+Pour pouvoir utiliser Spark afin de lancer des instructions sur Cassandra, nous devons ajouter des dépendances dans le répertoire `jars` de Spark. Cela se fait relativement simplement en téléchargeant deux fichiers `.jar`. Pour chaque nœuds, on peut donc exécuter :
+``` bash
+cd /home/ubuntu/spark-2.3.2-bin-hadoop2.7/jars && wget https://repo1.maven.org/maven2/com/twitter/jsr166e/1.1.0/jsr166e-1.1.0.jar && wget https://repo1.maven.org/maven2/com/datastax/spark/spark-cassandra-connector_2.11/2.4.0/spark-cassandra-connector_2.11-2.4.0.jar
+```
+Ces deux fichiers sont essentiels pour relier Spark et Cassandra.
+
+La dernière étape avant de pouvoir lancer tous les services est d'installer Zeppelin qui servira à lancer nos jobs et requêtes sur Spark.
 
 ---------------------------------------------
 ## 6. Installer Zeppelin sur les Masters 
@@ -478,6 +495,10 @@ Pour observer la charge des serveurs, on peut se connecter à ceux-ci et lancer 
 ```bash
 htop
 ```
+
+### 7.7 Tester la résilience de Spark
+A COMPLETER
+
 
 ## Annexes
 * Détail sur les types d'instances utilisables :
