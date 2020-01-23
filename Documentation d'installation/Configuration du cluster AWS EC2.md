@@ -314,10 +314,15 @@ cd /home/ubunut/spark-2.3.2-bin-hadoop2.7/conf && cp spark-env.sh.template spark
 On ouvre ensuite le fichier `spark-env.sh` que l'on vient de créer pour y renseigner les informations suivantes :
 
 ```bash
-export SPARK_LOCAL_IP=ip-172-31-89-119.ec2.internal
-export SPARK_MASTER_HOST=ip-172-31-89-119.ec2.internal
-export SPARK_MASTER_OPTS="-Dspark.deploy.recoveryMode=ZOOKEEPER -Dspark.deploy.zookeeper.url=ip-172-31-92-67.ec2.internal:2181,ip-172-31-91-100.ec2.internal:2182,ip-172-31-82-144.ec2.internal:2183"
+export SPARK_LOCAL_IP=ip-xxx-xx-xx-xxx.ec2.internal
+export SPARK_MASTER_HOST=ip-xxx-xx-xx-xxx.ec2.internal
+export SPARK_MASTER_OPTS="-Dspark.deploy.recoveryMode=ZOOKEEPER -Dspark.deploy.zookeeper.url=ip-xxx-xx-xx-xx.ec2.internal:2181,ip-xxx-xx-xx-xxx.ec2.internal:2182,ip-xxx-xx-xx-xxx.ec2.internal:2183"
 ```
+En résumé, il faut renseigner ainsi les champs suivants :
+* `SPARK_LOCAL_IP=` DNS privé du Master sur lequel on est ;
+* `SPARK_MASTER_HOST=` DNS privé du Master sur lequel on est ;
+* `SPARK_MASTER_OPTS=` DNS privé des nœuds Zookeeper avec à chaque fois les numéros de ports clients correspondants ;
+
 
 #### Sur les Workers
 
