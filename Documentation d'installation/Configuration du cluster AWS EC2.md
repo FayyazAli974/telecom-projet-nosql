@@ -378,6 +378,10 @@ Lancer sur chaque Worker :
 ```bash
 cd /home/ubuntu/spark-2.3.2-bin-hadoop2.7/sbin && ./start-slave.sh spark://ip-172-31-89-119.ec2.internal:7077,ip-172-31-82-26.ec2.internal:7077
 ```
+La commande générique est donc :
+```bash
+cd /home/ubuntu/spark-2.3.2-bin-hadoop2.7/sbin && ./start-slave.sh spark://Private_DNS_Master1:7077,Private_DNS_Master2:7077
+```
 On vérifie le bon fonctionnement via : `IPpublic:8081` (ex : http://3.93.186.250:8081/)
 
 
