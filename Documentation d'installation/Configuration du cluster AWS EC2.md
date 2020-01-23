@@ -1,5 +1,5 @@
 ------------------------------------------
-# <center>- Configuration du cluster AWS EC2 -</center>
+# - Configuration du cluster AWS EC2 -
 ------------------------------------------
 
 La configuration de notre architecture nécessite de configurer un cluster EC2 sur AWS. Pour notre cas, ce cluster comportera en tout 8 serveurs :
@@ -127,9 +127,14 @@ rpc_address: 172.31.80.158
 endpoint_snitch: Ec2Snitch
 ```
 
-Une astuce intéressante pour gagner du temps dans la modification des fichiers de configuration est de préparer les fichiers sur notre machine locale dans notre éditeur de texte préféré, pour ensuite copier ces fichier avec `scp` sur les différentes machines. La commande générique permettant de faire cela est la suivante (en se plaçant au préalable dans le dossier où se trouve notre clé `.pem` :
+Une astuce intéressante pour gagner du temps dans la modification des fichiers de configuration est de préparer les fichiers sur notre machine locale dans notre éditeur de texte préféré, pour ensuite copier ces fichier avec `scp` sur les différentes machines. La commande générique permettant de faire cela est la suivante (en se plaçant au préalable dans le dossier où se trouve notre clé `.pem`) :
 ```bash
-scp -i Nom_de_Key.pem Chemin/du/fichier/a/copier/fichier.ext ubuntu@ecx-xx-xxx-xxx-xxx.compute-1.amazonaws.com:Chemin/du/repertoire/de/destination/
+scp -i "Key_file_Name.pem" Chemin/du/fichier/a/copier/fichier.ext ubuntu@ecx-xx-xxx-xxx-xxx.compute-1.amazonaws.com:Chemin/du/repertoire/de/destination/
+```
+
+Il est de même possible de récupérer un fichier de configuration sur notre machine locale avec le même type de commande :
+```bash
+scp -i "Key_File_Name.pem" ubuntu@ecx-xx-xxx-xxx-xxx.compute-1.amazonaws.com:Chemin/du/fichier/a/recuperer/fichier.ext Chemin/local/de/destination/
 ```
 
 ### 3.4 Modification du fichier `cassandra-rackdc.properties`
