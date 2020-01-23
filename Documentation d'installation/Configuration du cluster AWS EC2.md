@@ -265,27 +265,65 @@ Et pour arrêter :
 --------------------------------------------
 ## 5. Installer Spark sur les Masters 1 et 2 et sur les 5 Workers
 
-Cette partie vise à détailler l'installation d'Apache-Spark sur notre cluster EC2 AWS et de le faire fonctionner avec nos instances Apache-Cassandra en totale résilience. Nous prendrons une configuration standard qui permet d'élire un Master qui répartira ses jobs sur les Workers. L'élection du master primaire est gérée par Zookeeper.
+Cette partie vise à détailler l'installation d'Apache-Spark sur notre cluster EC2 AWS et de le faire fonctionner avec nos instances Apache-Cassandra en totale résilience. Nous prendrons une configuration standard qui permet d'élire un Master qui répartira ensuite ses jobs sur les Workers. L'élection du master primaire est gérée par Zookeeper.
 
-Cette partie se divise en 5 sections.
+Cette partie se divise en 5 sections :
+* Installer Apache-SparK sur les Masters et Workers
+* Configurer le fichier spark-env.sh
+* Configurer le fichier spark-default.conf
+* Ajouter les dépendances pour connecter Spark et Cassandra
+* Lancer les Masters et les Workers
 
-[https://maelfabien.github.io/bigdata/Spark/#a-a-few-words-on-spark-](https://maelfabien.github.io/bigdata/Spark/#a-a-few-words-on-spark-)
 
-A TERMINER
-``` bash
+### 5.1 Installer Apache-SparK sur les Masters et Workers
+
+Il suffit de passer la commande suivante pour récupérer, extraire et supprimer l'archive sur chaque nœuds :
+```bash
 wget https://archive.apache.org/dist/spark/spark-2.3.2/spark-2.3.2-bin-hadoop2.7.tgz && tar -xzvf spark-2.3.2-bin-hadoop2.7.tgz && rm spark-2.3.2-bin-hadoop2.7.tgz
-
+```
+Puis de configurer les variables d'environnement pour tous les nœuds :
+```bash
 vi ~/.bashrc
+```
+Dans le fichier, on rajoute à la fin les lignes suivantes :
+```bash
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+export JRE_HOME=$JAVA_HOME/jre
+export PATH=$PATH:$JAVA_HOME/bin:$JAVA_HOME/jre/bin
+export SPARK_HOME=/home/ubuntu/spark-2.3.2-bin-hadoop2.7
+```
 
-=> export SPARK_HOME=/home/ubuntu/spark-2.3.2-bin-hadoop2.7
-
+On termine en sourçant le fichier pour que le système prenne en compte les modifications apportées :
+```bash
 source ~/.bashrc
+```
 
-echo $SPARK_HOME (pour vérifier)
+On peut vérifier la bonne prise en compte des modifications avec par exemple :
+```bash
+echo $SPARK_HOME
+```
 
-cd spark-2.3.2-bin-hadoop2.7/conf
-cp spark-env.sh.template spark-env.sh
-cp spark-defaults.conf.template spark-defaults.conf
+### 5.2 Configurer le fichier spark-env.sh
+
+#### Sur les Masters
+
+On commence par se rendre dans le dossier `conf` de spark et par copier les fichiers `spark-env.sh.template` et `spark-defaults.conf.template` (en prévision de l'étape suivante) dans de nouveaux fichiers :
+```bash
+cd /home/ubunut/spark-2.3.2-bin-hadoop2.7/conf && cp spark-env.sh.template spark-env.sh && cp spark-defaults.conf.template spark-defaults.conf
+```
+On ouvre ensuite le fichier `spark-env.sh` que l'on vient de créer pour y renseigner les informations suivantes :
+
+```bash
+export SPARK_LOCAL_IP=ip-172-31-89-119.ec2.internal
+export SPARK_MASTER_HOST=ip-172-31-89-119.ec2.internal
+export SPARK_MASTER_OPTS="-Dspark.deploy.recoveryMode=ZOOKEEPER -Dspark.deploy.zookeeper.url=ip-172-31-92-67.ec2.internal:2181,ip-172-31-91-100.ec2.internal:2182,ip-172-31-82-144.ec2.internal:2183"
+```
+
+#### Sur les Workers
+
+``` bash
+
+
 
 vi spark-defaults.conf (voir fichier pour modifs)
 vi spark-env.sh (voir fichier pour modifs)
@@ -298,11 +336,11 @@ wget https://repo1.maven.org/maven2/com/datastax/spark/spark-cassandra-connector
 Pour vérifier : IPpublic:8080 (ex : http://3.93.186.250:8080/)
 
 
-### 5.1 Installer Apache-SparK sur les Masters et Workers
 
-### 5.2 Configurer les nœuds Masters
+### 5.3 Configurer le fichier spark-default.conf
 
-### 5.3 Configurer les nœuds Workers
+Le fichier est cette fois quasiment identique pour les Masters et les Workers.
+
 
 ### 5.4 Ajouter les dépendances pour connecter Spark et Cassandra
 
@@ -387,8 +425,8 @@ La commande générique est donc :
 ```bash
 cd /home/ubuntu/spark-2.3.2-bin-hadoop2.7/sbin && ./start-slave.sh spark://Private_DNS_Master1:7077,Private_DNS_Master2:7077
 ```
-On vérifie le bon fonctionnement via : `IPpublic:8081` (ex : http://3.93.186.250:8081/)
 
+On vérifie le bon fonctionnement via : `IPpublic:8081` (ex : http://3.93.186.250:8081/)
 
 
 Test résilience : éteindre master1, regarder spark UI master 2 => les workers doivent y apparaître
@@ -428,6 +466,13 @@ ssh -L 8090:127.0.0.1:8090 -i gdeltKeyPair.pem ubuntu@ec2-xx-xxx-xxx-xxx.compute
 ```
 La commande `-L` redirige le port `127.0.0.1:8890` de l'instance Zeppelin de l'EC2 sur notre port local `8090` (port qui est spécifié en premier). On utilise de plus le DNS public du serveur pour s'y connecter en ssh.
 Il suffit alors d'ouvrir un navigateur et de se connecter à [http://localhost:8090/#/](http://localhost:8090/#/). 
+
+### 7.6 Observer la charge des serveurs en opération
+
+Pour observer la charge des serveurs, on peut se connecter à ceux-ci et lancer la commande :
+```bash
+htop
+```
 
 ## Annexes
 * Détail sur les types d'instances utilisables :
