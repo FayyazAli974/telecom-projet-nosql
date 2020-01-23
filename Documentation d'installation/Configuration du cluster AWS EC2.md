@@ -329,7 +329,10 @@ cp zeppelin-env.sh.template zeppelin-env.sh && cp zeppelin-site.xml.template zep
 ```bash
 vi zeppelin-env.sh
 ```
-Il faut alors décommenter et renseigner la ligne : `export ZEPPELIN_PORT=8090`
+Il faut alors décommenter et renseigner la ligne : 
+```bash
+export ZEPPELIN_PORT=8090
+```
 On enregistre et on quitte.
 ```bash
 vi zeppelin-site.xml
