@@ -166,6 +166,7 @@ Certaines lignes contiennent le mot ***"Handshaking"*** qui signifie que les nœ
 ./nodetool describecluster
 ```
 
+ 
 Nous pouvons maintenant passer à l'installation et la configuration de Zookeeper pour la résilience de Spark.
 
 
@@ -472,6 +473,12 @@ On peut ensuite vérifier le bon fonctionnement en faisant un `Ctrl+C` et `./nod
 ```bash
 ./cqlsh $(hostname -i)
 ```
+
+Lors du chargement de données sur le cluster, il convient d'observer le remplissage des disques de chaque nœuds pour ne pas arriver à saturation. Pour cela, on peut utiliser la commande :
+```bash
+df -h
+```
+
 
 ### 7.5 Zeppelin sur un Master
 ```bash
