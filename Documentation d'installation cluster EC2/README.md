@@ -24,48 +24,58 @@ La documentation qui suit permet de configurer ces instances, étapes par étape
 
 Amazon Elastic Compute Cloud (AWS EC2) est un service web qui permet d'accéder à des capacités sécurisées et résilientes dans le cloud. L'ensemble est élaboré pour être facilement scalable, ce qui facilite les passages à l'échelle et permet de dimensionner au plus juste besoin. Cette partie vise donc à fournir les informations de base permettant de paramétrer une instance EC2. Nous traiterons ici le cas d'une instance à 8 nœuds, qui correspond au besoin que nous avions pour ce projet.
 
-### 1.1 Configure the instance
+### 1.1 Configuration de l'instance
+
 * Depuis la **console AWS EC2**, cliquez sur ***"Lancer une instance"*** 
 
-* Sélectionnez ensuite l'image désirée sur les instances (l'Amazon Machine Image (AMI)) qui sera donc l'OS installé sur votre instance. Pour notre cas, nous avons choisi de prendre ***Ubuntu Server 18.04 LTS (HVM), SSD Volume Type***.
+* Sélectionnez (1.) ensuite l'image désirée sur les instances (l'Amazon Machine Image (AMI)) qui sera donc l'OS installé sur votre instance. Pour notre cas, nous avons choisi de prendre ***Ubuntu Server 18.04 LTS (HVM), SSD Volume Type***.
 
-* Sélectionnez ensuite le type d'instance désiré. Soyez sûr de prendre une instance adaptée à vos besoins. les `t2.micro` sont parfaitement adaptées pour les phases de tests ou de configuration. Vous pourrez par la suite facilement changer pour des instances plus performantes, comme des `m5.xlarge`. A la fin de ce document se trouvent des liens permettant d'accéder aux coûts horaires détaillés ainsi qu'aux spécifications techniques de chaque type d'instances. 
 
-* At the next step, you’ll be invited to add storage. Some Big Data projects imply several To. of data. For the sake of simplicity, we’ll use the standard storage of 8Gb. The storage is typically paid by Gb stored monthly.
+* Sélectionnez ensuite (2.) le type d'instance désiré. Soyez sûr de prendre une instance adaptée à vos besoins. les `t2.micro` sont parfaitement adaptées pour les phases de tests ou de configuration. Vous pourrez par la suite facilement changer pour des instances plus performantes, comme des `m5.xlarge`. A la fin de ce document se trouvent des liens permettant d'accéder aux coûts horaires détaillés ainsi qu'aux spécifications techniques de chaque type d'instances. 
+
+* L'étape qui suit (3.) vous demandera de configurer l'instance. Vous pourrez ici sélectionner le nombre voulu ainsi que le Rôle IAM. Dans notre cas, nous avons besoin de **8 instances** avec comme rôle **EMR_EC2_DefaultRole**.
+
+* A l'étape suivante (4.), on vous proposera de définir une capacité de stockage. Certains projets de Big Data nécessite plusieurs To de stockage. Ces capacités de stockages ont évidemment une influence ur la facturation au mois. Le détail des prix se retrouve en ligne.
 
 > Nous avons ici choisi de prendre **8 instances, avec 8 Go de disques dur** pour commencer. Ce volume sera ensuite modifié en cours de projet pour s'adapter aux besoins. Cela peut se faire dans la console de management de l'EC2 via **l'Elastic Block Storage (EBS) volumes**.
 
-* If needed, add tags. Else, just move on to the next step.
 
-* The security group allows your instances to communicate with other instances within the same security group. The communication between the slaves and the master is essential to transfer data typically.
+* Sur l'étape qui suit (5.), vous pouvez ajouter si besoin des balises. Nous n'avons ici rien renseigné. 
 
+* Vous serez ensuite (6.) invité à définir les groupes de sécurité qui permettront à vos instances de communiquer avec d'autres instances via le même groupe de sécurité. Renseignez ici toutes les règles dont vous avez besoin. Pensez notamment aux communications entrantes et sortantes avec votre machine locale pour accéder en SSH à votre cluster EC2. 
 
-This specific configuration allows SSH from anywhere. You might want to change this setting when working on real data.
+> Si vous ne souhaitez pas vous embêter avec cela, vous pouvez autoriser **tout le trafic** entrant et sortant mais cela n'est vraiment pas recommandé d'un point de vue sécurité. 
 
-We’re almost done. Just review your previous step, and click “Launch”.
-
-### 1.2 Create a key pair
-* “Amazon uses public-key cryptography to encrypt and decrypt login information. Public–key cryptography uses a public key to encrypt a piece of data, such as a password, then the recipient uses the private key to decrypt the data. The public and private keys are known as a key pair”. At this step, simply create a key pair and make sure to save it!
-
-If you are working on Windows or Linux, I think the extension would be something like .txt. Make sure to change it to .pem to identify your file as a key pair.
-
-* All your instances are now being initialized. For clarity, change the name of your instances accordingly to their role.
+* La dernière étape (7.) est simplement un récapitulatif de vérification. Si tout est conforme à vos spécifications, vous pouvez lancer votre instance et passer à la configuration d'une paire de clé.
 
 
-### 1.3 SSH Connection
-* Protect your key pair from accidental overwriting
+### 1.2 Création d'une paire de clé
 
-Open your terminal. Once you are in the folder that contains your key pair, copy-paste this code :
+> *Une paire de clés se compose d'une clé publique conservée par AWS et d'un fichier de clé privée que vous conservez. Ensemble, elles vous permettent de vous connecter à votre instance en toute sécurité. Pour les AMI Windows, le fichier de clé privée est requis pour obtenir le mot de passe utilisé pour se connecter à votre instance. Pour les AMI Linux, le fichier de clé privée vous permet d'accéder en toute sécurité à votre instance via SSH.*
 
-chmod 400 Cluster_test_Key_Pair.pem
-* Try a connexion to one of your instances Copy the public DNS of Master 1 from your AWS Console : image
+> *Remarque : La paire de clés sélectionnée sera ajoutée à l'ensemble de clés autorisé pour cette instance. En savoir plus sur la suppression de paires de clés existantes d'une AMI publique.*
 
-Then, execute the following commande bellow :
+* A cette étape, créez simplement une paire de clé et **faites bien attention à la sauvegarder en lieu sûr** car vous ne pourrez plus la télécharger ensuite et il vous fera en créer une nouvelle.
 
-ssh -i "<path to your keyPair directory>/Cluster_test_Key_Pair.pem" ubuntu@<copy the public DNS> 
-You should now be connected to your newly created EC2 cluster!
+L'extension du fichier en question doit être en `.pem`. Si ce n'est pas le cas, modifiez cela.
 
-In the next article, we’ll focus on installing Apache-Cassandra on an AWS EC2 Cluster
+* Toutes vos instances sont maintenant initialisées. Pour plus de clarté, n'hésitez pas à nommer celles-ci en fonction de votre cas. Une bonne pratique consiste à les nommer par leurs rôles.
+
+
+### 1.3 Connexion SSH
+
+* Commencez par protéger votre fichier `.pem` pour éviter toute modification. Dans votre terminal, allez dans le dossier où votre fichier se trouve (`cd chemin/du/dossier`) puis entrez ce code :
+```bash
+chmod 400 Nom_de_fichier.pem
+```
+
+* Vous pouvez maintenant vous connecter sur vos instances en copiant le DNS public d'un de vos nœeuds, disponible depuis la console AWS. La commande ressemble à :
+```bash
+ssh -i "chemin/du/dossier/Nom_de_fichier.pem" ubuntu@<copy the public DNS> 
+```
+Vous devriez alors être connecté à l'instance EC2 sélectionnée.
+
+La suite, pour un projet comme le nôtre, est d'installer tout ce dont nous avons besoin sur ce cluster nouvellement créé.
 
 
 ---------------------------------------------
@@ -81,6 +91,11 @@ cd PATH_TO_YOUR_KEYPAIR
 ssh -i "gdeltKeyPair.pem" ubuntu@<copy the public DNS> 
 ```
 Cette action est donc à faire pour chaque serveurs.
+
+**Remarque :** Pour mettre à jour votre serveur avant de commencer, vous pouvez lancer les commandes suivantes :
+```bash
+sudo apt-get update && sudo apt-get upgrade
+```
 
 ### 2.2 Installation de Java SDK 8
 
