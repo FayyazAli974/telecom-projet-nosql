@@ -21,7 +21,7 @@ La documentation qui suit permet de configurer ces instances, étapes par étape
 
 --------------------------------------------
 ## 1. Lancer un cluster EC2 sur AWS et y accéder
-A FAIRE
+A REDIGER
 
 ---------------------------------------------
 ## 2. Configurer préalablement les 8 serveurs avec Java et les Workers avec Python
