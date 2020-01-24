@@ -1,6 +1,6 @@
 # Telecom - Projet NoSQL - Données GDELT
 
-**Groupe**: Fayyaz Ali, Philippe Bénézeth, Thomas Koch, Xavier Bracquart
+**Groupe**: *Fayyaz Ali, Philippe Bénézeth, Thomas Koch, Xavier Bracquart*
 
 ## Présentation
 
