@@ -504,10 +504,26 @@ htop
 ```
 
 ### 7.7 Tester la résilience de Spark
-A COMPLETER
+Comme nous le disions plus haut, Zookeeper permet d'assurer la résilience des Masters Spark. Mais concrètement, comme cela se passe-t-il ? 
+
+Si nous "tuons" le Master 1, Zookeeper gèrera automatiquement l'élection du nouveau Master, qui sera donc le numéro 2, et sur lequel tous les Workers se verront rattachés. Pour tester cela, une fois les services correctement lancés, il suffit :
+* D'éteindre manuellement le Master1 via la console AWS EC2 ;
+* De regarder le port 8080 du Master 2 (Spark UI) `IP_public:8080` ;
+* D'observer le rattachement des Workers au nouveau Master ;
+
+On peut également observer les fichiers de logs Spark du Master2. POur cela, au lancement de Spark sur le Master, Spark indique le chemin du fichier où il loguera la session. il suffit donc de lire le contenu de ce fichier avec la commande `cat` pour constater l'apparition des lignes suivantes :
+```bash
+cat /home/ubuntu/spark-2.3.2-bin-hadoop2.7/logs/spark-ubuntu-org.apache.spark.deploy.master.Master-1-ip-xxx-xx-xx-xx.out
+...
+2020-01-19 11:51:08 INFO  ZooKeeperLeaderElectionAgent:54 - We have gained leadership
+2020-01-19 11:51:08 INFO  Master:54 - I have been elected leader! New state: RECOVERING
+...
+```
+
+Si ces lignes apparaissent bien, c'est que la configuration de Zookeeper et Spark est bonne !
 
 
-## Annexes
+## Liens
 * Détail sur les types d'instances utilisables :
 https://aws.amazon.com/fr/ec2/instance-types/
 * Détail sur la facturation des instances utilisées :
