@@ -1,7 +1,8 @@
 *.ipynb_checkpoints
 */data
-*/Old
 */old
-Old
 old
-EC2
+keys
+documentation
+
+Notes-projet.txt
